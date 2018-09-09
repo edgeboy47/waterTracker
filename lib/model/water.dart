@@ -1,5 +1,6 @@
 class Water{
-  int amount, datetime;
+  int amount;
+  DateTime dateTime;
 
-  Water({this.datetime, this.amount});
+  Water({this.dateTime, this.amount});
 }
