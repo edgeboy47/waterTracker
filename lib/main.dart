@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:water_tracker/data/database.dart';
 
@@ -20,28 +22,46 @@ class MyScaffold extends StatefulWidget {
 
 class _MyScaffoldState extends State<MyScaffold> {
   WaterDatabase waterDatabase;
+  int _waterToday;
 
   @override
-    void initState() {
-      waterDatabase = WaterDatabase();
-      _init();
-      super.initState();
-    }
-  
+  void initState() {
+    super.initState();
+    waterDatabase = WaterDatabase();
+    _init().then((onValue) {
+      _setTotalForDay();
+    });
+  }
+
+  void _setTotalForDay() {
+    waterDatabase.getTotalForDay().then((val) {
+      setState(() {
+        _waterToday = val == null ? 0 : val;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(title: Text('Appbar')),
         body: Center(
             child: Text(
-          'Test',
+          '$_waterToday',
           style: TextStyle(fontSize: 24.0),
           textAlign: TextAlign.center,
-        )));
+        )),
+        floatingActionButton:
+            FloatingActionButton(onPressed: _onPress, child: Icon(Icons.add)));
   }
 
-  void _init() async{
+  Future<void> _init() async {
     await waterDatabase.init();
-    await waterDatabase.dailyTotal();
+  }
+
+  void _onPress() {
+    waterDatabase.insert(DateTime.now(), 12).then((onValue) {
+      _setTotalForDay();
+    });
   }
 }

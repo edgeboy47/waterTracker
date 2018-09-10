@@ -56,7 +56,7 @@ class WaterDatabase{
     } catch(e){print("Failed to insert record: $e");}
   }
 
-  Future<int> dailyTotal() async{
+  Future<int> getTotalForDay() async{
     try{
       _open();
       final datePattern = DateTime.now().toIso8601String().substring(0, 10) + '%';
@@ -67,6 +67,7 @@ class WaterDatabase{
         Where DateTime Like "$datePattern"
         '''
       );
+      print("Collected daily total: $result");
       return result[0]["SUM(Amount)"];
     } catch(e){ 
       print("Failed to retrieve daily amount");
@@ -108,6 +109,6 @@ class WaterDatabase{
   }
 
   Future<void> _open() async{
-    if(!_db.isOpen){ await this.init();}
+    if(_db == null || !_db.isOpen){ await this.init();}
   }
 }
