@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:water_tracker/data/database.dart';
 import 'dart:async';
+import 'package:intl/intl.dart';
 
 class MyScaffold extends StatefulWidget {
   @override
@@ -84,7 +85,13 @@ class _MyScaffoldState extends State<MyScaffold> {
                   shrinkWrap: true,
                   itemCount: values.length,
                   itemBuilder: (ctx, index) {
-                    return ListTile(title: Text("$index"));
+                    final int amount = values[index]["Amount"]; 
+                    final DateTime dt = DateTime.parse(values[index]["DateTime"]);
+                    final String time = DateFormat.jm().format(dt);
+                    return ListTile(
+                      title: Text("$amount fl. oz"),
+                      trailing: Text("$time"),
+                    );
                   }));
         }
         break;
